@@ -1,36 +1,61 @@
-" language can be 'ruby', 'python', 'lua', or 'perl'
-let g:script_language='python'
-function! CRForPyI()
-	" call PyRun if user pressed <enter>
+" Ripple - a read-eval-print-loop inside vim
+
+if exists('loaded_ripple') || &cp || version < 700
+    finish
+endif
+let loaded_ripple = 1
+
+function! ValidateLanguage()
+    let supported_languages = [ 'ruby', 'python', 'lua', 'perl' ]
+    let is_good = index(supported_languages, g:ripple_language) >= 0
+    if !is_good
+        echoerr 'Language "'. g:ripple_language .'" is unsupported by vim-ripple.'
+    elseif !has(g:ripple_language)
+        echoerr 'Your vim does not have '. g:ripple_language .' support. See :help '. g:ripple_language
+        let is_good = 0
+    endif
+    return is_good
+endfunction
+
+if !exists("g:ripple_language")
+    let g:ripple_language = 'python'
+endif
+
+if !ValidateLanguage()
+    finish
+endif
+
+function! EvaluateFromInsertMode()
+	" call EvaluateCurrentLine if user pressed <enter>
 	" on a line starting with '>>>' 
 	" (the single-line "prompt")
 	if getline(line('.')) =~ '^>>>'
-		call PyRun()
+		call EvaluateCurrentLine()
 	else
 		normal! i
 	endif
 	return ''
 endfunction
-function! CRForPy()
-	" call PyRun if user pressed <enter>
+function! EvaluateFromNormalMode()
+	" call EvaluateCurrentLine if user pressed <enter>
 	" on a line starting with '>>>' 
 	" (the single-line "prompt")
 	if getline(line('.')) =~ '^>>>'
-		call PyRun()
+		call EvaluateCurrentLine()
 	else
 		normal! 
 	endif
 	return ''
 endfunction
-function! VisualPyCommand() range 
+function! EvaluateRange() range 
 	" runs visually highlighted multiline block
-	" of python with single 'python' command
+	" of code with single call to the interpreter
 	let g:first=a:firstline
 	let g:last= a:lastline
 	let g:myvar = getline(g:first,g:last)
 	let myvar=''
 	redir =>> myvar
-	:silent! execute g:script_language." ".join(g:myvar,"\n")
+	:silent! execute g:ripple_language." ".join(g:myvar,"\n")
 	redir END
 	call append(g:last,'---Results---')
 	call append(g:last+1,myvar)
@@ -40,7 +65,7 @@ function! VisualPyCommand() range
 
 	if getline(line('.')) =~ @a
 		silent execute '.s/^'.@a.'//e'
-		if g:script_language !~ 'ruby\|perl'
+		if g:ripple_language !~ 'ruby\|perl'
 			silent execute '.s/'.@a.'//ge'
 		else
 			silent execute '.s/'.@a.@a.'//ge'
@@ -48,7 +73,7 @@ function! VisualPyCommand() range
 		endif
 	endif
 endfunction
-function! PyRun()
+function! EvaluateCurrentLine()
 	"get result of the command
 	let result = DoCommand()
 	" and now append and format the result 
@@ -81,14 +106,14 @@ endfunction
 
 function! DoCommand()
 	" this function redirects output to a variable,
-	" runs the command, and returns result back to PyRun()
+	" runs the command, and returns result back to EvaluateCurrentLine()
 	let command = matchstr(getline(line('.')),'>>>\zs.*')
 	let @a=''
 	let g:result = ''
 	" tweak: initial p gets expanded to full 'print'
 	let command = substitute(command,'^\s*[pP] ','print ','')
 	redir =>> g:result
-	silent! exec g:script_language." ".command
+	silent! exec g:ripple_language." ".command
 	redir END
 	let @a=g:result[0]
 	if g:result == ''
@@ -97,8 +122,9 @@ function! DoCommand()
 	return g:result
 endfunction
 
-nmap <CR> :call CRForPy()<cr>
-imap <CR> <c-r>=CRForPyI()<cr>
-vmap <c-cr> :call VisualPyCommand()<cr>
-syn region rippleError start='^Error detected while' end='^\s*\S\+Error:.*$'
-hi PyErr guifg=red
+nmap <CR> :call EvaluateFromNormalMode()<cr>
+imap <CR> <c-r>=EvaluateFromInsertMode()<cr>
+vmap <c-cr> :call EvaluateRange()<cr>
+" TODO: will this work for all languages?
+syn region rippleError start='^Error detected while' end='^\S\+Error:.*$'
+hi rippleError guibg=red
