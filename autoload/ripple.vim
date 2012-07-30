@@ -41,16 +41,16 @@ endfunction
 function! s:EvaluateRange() range 
 	" runs visually highlighted multiline block of code with single call to
 	" the interpreter
-	let g:first=a:firstline
-	let g:last= a:lastline
-	let g:myvar = getline(g:first,g:last)
-	let myvar=''
-	redir =>> myvar
-	silent! execute b:ripple_language." ".join(g:myvar,"\n")
+	let lines = getline(a:firstline, a:lastline)
+	let result=''
+	redir =>> result
+	silent! execute b:ripple_language." ".join(lines,"\n")
 	redir END
-	call append(g:last,'---Results---')
-	call append(g:last+1,myvar)
-	execute g:last+2
+
+	" Put the interpreter output into the buffer
+	call append(a:lastline,'---Results---')
+	call append(a:lastline+1,result)
+	execute a:lastline+2
 	"normal V"ad
 	"call append(line('.'),split(@a,"\n"))
 
@@ -100,17 +100,17 @@ function! s:DoCommand()
 	" returns result back to s:EvaluateCurrentLine()
 	let command = matchstr(getline(line('.')),'>>>\zs.*')
 	let @a=''
-	let g:result = ''
+	let result = ''
 	" tweak: initial p gets expanded to full 'print'
 	let command = substitute(command,'^\s*[pP] ','print ','')
-	redir =>> g:result
+	redir =>> result
 	silent! exec b:ripple_language." ".command
 	redir END
-	let @a=g:result[0]
-	if g:result == ''
-		let g:result='('.command.' )'
+	let @a=result[0]
+	if result == ''
+		let result='('.command.' )'
 	endif
-	return g:result
+	return result
 endfunction
 
 " Single optional argument: The language for the repl. If none is specified,
