@@ -144,7 +144,9 @@ function! ripple#CreateRepl(...)
 	let b:ripple_language = l:ripple_language
 
 	nnoremap <buffer> <CR> :call <SID>EvaluateFromNormalMode()<CR>
+	" Should this be <C-CR> so you can write more than one line of code?
 	inoremap <buffer> <CR> <c-r>=<SID>EvaluateFromInsertMode()<CR>
+	" TODO: Why C-CR
 	vnoremap <buffer> <C-CR> :call <SID>EvaluateRange()<CR>
 
 	" TODO: will this work for all languages?
