@@ -5,6 +5,10 @@ if exists('loaded_ripple') || &cp || version < 700
 endif
 let loaded_ripple = 1
 
+if !exists("g:ripple_language")
+	let g:ripple_language = 'python'
+endif
+
 function! ValidateLanguage()
 	let supported_languages = [ 'ruby', 'python', 'lua', 'perl' ]
 	let is_good = index(supported_languages, g:ripple_language) >= 0
@@ -16,14 +20,6 @@ function! ValidateLanguage()
 	endif
 	return is_good
 endfunction
-
-if !exists("g:ripple_language")
-	let g:ripple_language = 'python'
-endif
-
-if !ValidateLanguage()
-	finish
-endif
 
 function! EvaluateFromInsertMode()
 	" call EvaluateCurrentLine if user pressed <enter> on a line starting with
@@ -119,11 +115,32 @@ function! DoCommand()
 	return g:result
 endfunction
 
-nmap <CR> :call EvaluateFromNormalMode()<cr>
-imap <CR> <c-r>=EvaluateFromInsertMode()<cr>
-vmap <c-cr> :call EvaluateRange()<cr>
-" TODO: will this work for all languages?
-syn region rippleError start='^Error detected while' end='^\S\+Error:.*$'
-hi rippleError guibg=red
+function! CreateRepl()
+	if !ValidateLanguage()
+		return
+	endif
+
+	" Setup new buffer
+	if exists(':Scratch') == 2
+		exec 'silent Scratch '. g:ripple_language
+	else
+		silent vnew `= g:ripple_language`
+		let &ft = g:ripple_language
+	endif
+	put! ='>>> '
+
+	nnoremap <buffer> <CR> :call EvaluateFromNormalMode()<CR>
+	inoremap <buffer> <CR> <c-r>=EvaluateFromInsertMode()<CR>
+	vnoremap <buffer> <C-CR> :call EvaluateRange()<CR>
+
+	" TODO: will this work for all languages?
+	syn region rippleError start='^Error detected while' end='^\S\+Error:.*$'
+	hi rippleError guibg=red
+
+	normal! $
+	if has('ex_extra')
+		startinsert!
+	endif
+endfunction
 
 " vim:noet:ts=4 sw=4:
