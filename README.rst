@@ -10,7 +10,7 @@ Screencast
 ----------
 Watch the `screencast demo`_ of vim-ripple.
 
-_screencast demo: http://vimeo.com/16871727
+.. _screencast demo: http://vimeo.com/16871727
 
 
 Recommendations
@@ -19,19 +19,19 @@ You can get tab completion of your Python commands by using any of the
 available methods of completion in Vim.  I've tried the pydiction 
 tab-completion plugin and recommend that anyone using vim-ripple install pydiction_
 
-_pydiction: http://www.vim.org/scripts/script.php?script_id=850  
+.. _pydiction: http://www.vim.org/scripts/script.php?script_id=850  
+
+
+You should get itchy.vim_ to have improved splitting behavior when opening a
+new REPL.
+
+.. _itchy.vim: https://github.com/pydave/itchy.vim
 
 
 Compatibility
 -------------
 vim-ripple works with Ruby, Perl, and Lua.
 
-The global variable g:script_language can be set to 'python,'ruby','perl', or
-'lua'. It controls which interpreter is used to process '>>>' commands and
-code blocks.  Support for each interpreter must be compiled into your Vim.
-Note also that usng Perl is a little different from the other languages,
-because Vim does not support Perl's 'print' or 'say' commands.  Instead
-'VIM::Msg' is used to specify printed output.   See :help perl for more.
 
 
 Details
@@ -58,6 +58,10 @@ but it should be relatively easy to extend to other supported languages.
 In general, this plugin makes Vim into an alternative to Python's IDLE.  It
 has advantages and disadvantages compared to IDLE, but it's possible that some
 people may prefer it to a tool like IDLE, at least for some uses.
+
+
+Using Ripple
+------------
 
 When the vim-ripple plugin is loaded you can process language commands and get
 output in your Vim buffer in several different ways:

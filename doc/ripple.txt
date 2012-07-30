@@ -1,0 +1,93 @@
+*ripple.txt*  A REPL inside vim
+
+Authors:  hsitz and pydave
+
+This plugin is only available if 'compatible' is not set.
+
+INTRODUCTION                                          *ripple*
+
+Ripple is a REPL (read-evalulate-print-loop) plugin for vim. It allows
+you to write code in a vim buffer and execute it from that buffer. The
+results will be appended to the buffer. You can write both single lines of
+code and blocks. Ripple can support any language with native vim
+bindings.
+
+COMPATIBILITY                                  *ripple-compat*
+
+Ripple works with Ruby, Perl, and Lua.
+
+The global variable g:ripple_default_language can be set to 'python, 'ruby',
+'perl', or 'lua'. It controls which interpreter is used to process '>>>'
+commands and code blocks.  Support for each interpreter must be compiled
+into your Vim.
+
+Note also that usng Perl is a little different from the other languages,
+because Vim does not support Perl's 'print' or 'say' commands. Instead
+'VIM::Msg' is used to specify printed output.   See :help perl for more.
+
+Ripple requires a Vim executable compiled with support for the scripting
+language(s) that will be used. It has been tested with Python26, Ruby1.8,
+Perl 5.12, and Lua 5.1, but version should not matter.
+
+
+COMMANDS                                     *ripple-commands*
+
+                                              *ripple-:Ripple*
+:Ripple [language]  Open a REPL in a new buffer with the input language. If
+                    [language] is omitted, |g:ripple_default_language| is
+                    used instead. If installed, this command will use
+                    |itchy| to open a scratch buffer. Otherwise, it just
+                    splits the window.
+
+                                               *ripple-prompt*
+In the ripple REPL, there is a prompt: '>>>'. This prompt indicates an
+executable line of code.
+
+                                                 *ripple-<CR>*
+<CR>                In normal mode, <CR> evaluates the current line if it
+                    is prefixed with the |ripple-prompt|. The output will be
+                    printed on the next line.
+
+                                               *ripple-i_<CR>*
+<CR>                The same as the normal mode <CR>, but in insert mode.
+
+                                             *ripple-v_<C-CR>*
+<C-CR>              In visual mode, <C-CR> evaluates the current selection
+                    (line-wise). It should not contain any |ripple-prompt|.
+                    The output will be printed below the selection.
+
+
+Commands that provide no output have the command itself mirrored as output
+as confirmation that they have been processed.
+
+You will typically want to issue Python print commands, and these can be
+abbreviated with 'p' instead of 'print'.
+
+Note: It's not part of the plugin, but an entire file of Python can be
+executed with the Vim command:   pyfile <filename>.  The plugin does not
+capture any output from this command, however functions defined in the file
+can may then be accessed in the Vim buffer using single-line-prompt Python
+commands or the block-select Python processing.
+
+Ripple has a couple of lines defining a syntax region for error messages and
+a highlight command that displays them in red.  This may be overwritten by a
+syntax file that clears all syntax settings so if you want to use these you
+may want to move the syntax and the highlight command to a syntax and color
+file, respectively.
+
+DEPENDENCIES                                  *ripple-depends*
+
+Ripple uses itchy.vim, but it doesn't require it. When using itchy, the REPL
+will be a scratch buffer (so vim won't expect you to save it) and will have
+improved splitting behavior. Ripple recommends to enable itchy's always
+split option. >
+    g:itchy_always_split = 1
+<
+
+ABOUT                                           *ripple-about*
+
+Grab the latest version or report a bug on GitHub:
+
+http://github.com/pydave/vim-ripple
+
+ vim:tw=78:et:ft=help:norl:
