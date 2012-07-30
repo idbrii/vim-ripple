@@ -100,5 +100,5 @@ endfunction
 nmap <CR> :call CRForPy()<cr>
 imap <CR> <c-r>=CRForPyI()<cr>
 vmap <c-cr> :call VisualPyCommand()<cr>
-syn region PyErr start='^Error detected while' end='^\S\+Error:.*$'
+syn region rippleError start='^Error detected while' end='^\s*\S\+Error:.*$'
 hi PyErr guifg=red
