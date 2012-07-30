@@ -1,5 +1,10 @@
 " Ripple - a read-eval-print-loop inside vim
 
+" TODO:
+"	* Write a help file.
+"	* Allow newlines so you can write a class or function.
+"	* Fix error highlighting (never ends).
+
 if !exists('loaded_ripple') || &cp || version < 700
 	finish
 endif
@@ -52,15 +57,15 @@ function! s:EvaluateRange() range
 	call append(a:lastline+1,result)
 	execute a:lastline+2
 	"normal V"ad
-	"call append(line('.'),split(@a,"\n"))
+	"call append(line('.'),split(b:bad_char,"\n"))
 
-	if getline(line('.')) =~ @a
-		silent execute '.s/^'.@a.'//e'
+	if getline(line('.')) =~ b:bad_char
+		silent execute '.s/^'.b:bad_char.'//e'
 		if b:ripple_language !~ 'ruby\|perl'
-			silent execute '.s/'.@a.'//ge'
+			silent execute '.s/'.b:bad_char.'//ge'
 		else
-			silent execute '.s/'.@a.@a.'//ge'
-			silent execute '.s/'.@a.'//ge'
+			silent execute '.s/'.b:bad_char.b:bad_char.'//ge'
+			silent execute '.s/'.b:bad_char.'//ge'
 		endif
 	endif
 endfunction
@@ -75,12 +80,12 @@ function! s:EvaluateCurrentLine()
 	call append(line('.'),'>>>  _')
 	" result has troublesome '<ctrl-@>' characters that we will remove.
 	" Quoting them or using literally doesn't work, so a single <ctrl-@> was
-	" (hopefully) stored into @a in s:DoCommand()
-	if getline(line('.')) =~ @a
-		silent execute '.s/^'.@a.'//e'
+	" (hopefully) stored into b:bad_char in s:DoCommand()
+	if getline(line('.')) =~ b:bad_char
+		silent execute '.s/^'.b:bad_char.'//e'
 		"if != 'ruby'
-		silent execute '.s/'.@a.@a.'//ge'
-		silent execute '.s/'.@a.'//ge'
+		silent execute '.s/'.b:bad_char.b:bad_char.'//ge'
+		silent execute '.s/'.b:bad_char.'//ge'
 		"endif
 	endif
 	" try to do nice formatting when result has
@@ -99,14 +104,14 @@ function! s:DoCommand()
 	" this function redirects output to a variable, runs the command, and
 	" returns result back to s:EvaluateCurrentLine()
 	let command = matchstr(getline(line('.')),'>>>\zs.*')
-	let @a=''
+	let b:bad_char=''
 	let result = ''
 	" tweak: initial p gets expanded to full 'print'
 	let command = substitute(command,'^\s*[pP] ','print ','')
 	redir =>> result
 	silent! exec b:ripple_language." ".command
 	redir END
-	let @a=result[0]
+	let b:bad_char=result[0]
 	if result == ''
 		let result='('.command.' )'
 	endif
