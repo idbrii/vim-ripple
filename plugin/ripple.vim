@@ -5,8 +5,8 @@ if exists('loaded_ripple') || &cp || version < 700
 endif
 let loaded_ripple = 1
 
-if !exists("g:ripple_language")
-	let g:ripple_language = 'python'
+if !exists("g:ripple_default_language")
+	let g:ripple_default_language = 'python'
 endif
 
 command! -nargs=? RippleCreate :call ripple#CreateRepl(<f-args>)

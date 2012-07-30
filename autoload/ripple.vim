@@ -4,13 +4,13 @@ if !exists('loaded_ripple') || &cp || version < 700
 	finish
 endif
 
-function! ripple#ValidateLanguage()
+function! ripple#ValidateLanguage(ripple_language)
 	let supported_languages = [ 'ruby', 'python', 'lua', 'perl' ]
-	let is_good = index(supported_languages, g:ripple_language) >= 0
+	let is_good = index(supported_languages, a:ripple_language) >= 0
 	if !is_good
-		echoerr 'Language "'. g:ripple_language .'" is unsupported by vim-ripple.'
-	elseif !has(g:ripple_language)
-		echoerr 'Your vim does not have '. g:ripple_language .' support. See :help '. g:ripple_language
+		echoerr 'Language "'. a:ripple_language .'" is unsupported by vim-ripple.'
+	elseif !has(a:ripple_language)
+		echoerr 'Your vim does not have '. a:ripple_language .' support. See :help '. a:ripple_language
 		let is_good = 0
 	endif
 	return is_good
@@ -46,7 +46,7 @@ function! s:EvaluateRange() range
 	let g:myvar = getline(g:first,g:last)
 	let myvar=''
 	redir =>> myvar
-	silent! execute g:ripple_language." ".join(g:myvar,"\n")
+	silent! execute b:ripple_language." ".join(g:myvar,"\n")
 	redir END
 	call append(g:last,'---Results---')
 	call append(g:last+1,myvar)
@@ -56,7 +56,7 @@ function! s:EvaluateRange() range
 
 	if getline(line('.')) =~ @a
 		silent execute '.s/^'.@a.'//e'
-		if g:ripple_language !~ 'ruby\|perl'
+		if b:ripple_language !~ 'ruby\|perl'
 			silent execute '.s/'.@a.'//ge'
 		else
 			silent execute '.s/'.@a.@a.'//ge'
@@ -104,7 +104,7 @@ function! s:DoCommand()
 	" tweak: initial p gets expanded to full 'print'
 	let command = substitute(command,'^\s*[pP] ','print ','')
 	redir =>> g:result
-	silent! exec g:ripple_language." ".command
+	silent! exec b:ripple_language." ".command
 	redir END
 	let @a=g:result[0]
 	if g:result == ''
@@ -114,24 +114,27 @@ function! s:DoCommand()
 endfunction
 
 " Single optional argument: The language for the repl. If none is specified,
-" uses default in g:ripple_language.
+" uses default in g:ripple_default_language.
 function! ripple#CreateRepl(...)
 	if a:0
-		let g:ripple_language = a:1
+		let l:ripple_language = a:1
+	else
+		let l:ripple_language = g:ripple_default_language
 	endif
 
-	if !ripple#ValidateLanguage()
+	if !ripple#ValidateLanguage(l:ripple_language)
 		return
 	endif
 
 	" Setup new buffer
 	if exists(':Scratch') == 2
-		exec 'silent Scratch '. g:ripple_language
+		exec 'silent Scratch '. l:ripple_language
 	else
-		silent vnew `= g:ripple_language`
-		let &ft = g:ripple_language
+		silent vnew `= l:ripple_language`
+		let &ft = l:ripple_language
 	endif
 	put! ='>>> '
+	let b:ripple_language = l:ripple_language
 
 	nnoremap <buffer> <CR> :call <SID>EvaluateFromNormalMode()<CR>
 	inoremap <buffer> <CR> <c-r>=<SID>EvaluateFromInsertMode()<CR>
