@@ -3,7 +3,7 @@
 " TODO:
 "	* Write a help file.
 "	* Allow newlines so you can write a class or function.
-"	* Fix error highlighting (never ends).
+"	* Prevent error on empty line (just prompt).
 
 if !exists('loaded_ripple') || &cp || version < 700
 	finish
@@ -146,7 +146,7 @@ function! ripple#CreateRepl(...)
 	vnoremap <buffer> <C-CR> :call <SID>EvaluateRange()<CR>
 
 	" TODO: will this work for all languages?
-	syn region rippleError start='^Error detected while' end='^\S\+Error:.*$'
+	syn region rippleError start='^Error detected while' end='^\s*\S\+Error:.*$'
 	hi rippleError guibg=red
 
 	normal! $
