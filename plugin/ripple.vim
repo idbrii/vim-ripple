@@ -1,34 +1,33 @@
 " Ripple - a read-eval-print-loop inside vim
 
 if exists('loaded_ripple') || &cp || version < 700
-    finish
+	finish
 endif
 let loaded_ripple = 1
 
 function! ValidateLanguage()
-    let supported_languages = [ 'ruby', 'python', 'lua', 'perl' ]
-    let is_good = index(supported_languages, g:ripple_language) >= 0
-    if !is_good
-        echoerr 'Language "'. g:ripple_language .'" is unsupported by vim-ripple.'
-    elseif !has(g:ripple_language)
-        echoerr 'Your vim does not have '. g:ripple_language .' support. See :help '. g:ripple_language
-        let is_good = 0
-    endif
-    return is_good
+	let supported_languages = [ 'ruby', 'python', 'lua', 'perl' ]
+	let is_good = index(supported_languages, g:ripple_language) >= 0
+	if !is_good
+		echoerr 'Language "'. g:ripple_language .'" is unsupported by vim-ripple.'
+	elseif !has(g:ripple_language)
+		echoerr 'Your vim does not have '. g:ripple_language .' support. See :help '. g:ripple_language
+		let is_good = 0
+	endif
+	return is_good
 endfunction
 
 if !exists("g:ripple_language")
-    let g:ripple_language = 'python'
+	let g:ripple_language = 'python'
 endif
 
 if !ValidateLanguage()
-    finish
+	finish
 endif
 
 function! EvaluateFromInsertMode()
-	" call EvaluateCurrentLine if user pressed <enter>
-	" on a line starting with '>>>' 
-	" (the single-line "prompt")
+	" call EvaluateCurrentLine if user pressed <enter> on a line starting with
+	" '>>>' (the single-line "prompt")
 	if getline(line('.')) =~ '^>>>'
 		call EvaluateCurrentLine()
 	else
@@ -37,9 +36,8 @@ function! EvaluateFromInsertMode()
 	return ''
 endfunction
 function! EvaluateFromNormalMode()
-	" call EvaluateCurrentLine if user pressed <enter>
-	" on a line starting with '>>>' 
-	" (the single-line "prompt")
+	" call EvaluateCurrentLine if user pressed <enter> on a line starting with
+	" '>>>' (the single-line "prompt")
 	if getline(line('.')) =~ '^>>>'
 		call EvaluateCurrentLine()
 	else
@@ -48,14 +46,14 @@ function! EvaluateFromNormalMode()
 	return ''
 endfunction
 function! EvaluateRange() range 
-	" runs visually highlighted multiline block
-	" of code with single call to the interpreter
+	" runs visually highlighted multiline block of code with single call to
+	" the interpreter
 	let g:first=a:firstline
 	let g:last= a:lastline
 	let g:myvar = getline(g:first,g:last)
 	let myvar=''
 	redir =>> myvar
-	:silent! execute g:ripple_language." ".join(g:myvar,"\n")
+	silent! execute g:ripple_language." ".join(g:myvar,"\n")
 	redir END
 	call append(g:last,'---Results---')
 	call append(g:last+1,myvar)
@@ -81,10 +79,9 @@ function! EvaluateCurrentLine()
 	call append(line('.'),result)
 	normal j
 	call append(line('.'),'>>>  _')
-	" result has troublesome '<ctrl-@>' characters
-	" that we will remove.  Quoting them or using 
-	" literally doesn't work, so a single <ctrl-@>
-	" was (hopefully) stored into @a in DoCommand()
+	" result has troublesome '<ctrl-@>' characters that we will remove.
+	" Quoting them or using literally doesn't work, so a single <ctrl-@> was
+	" (hopefully) stored into @a in DoCommand()
 	if getline(line('.')) =~ @a
 		silent execute '.s/^'.@a.'//e'
 		"if != 'ruby'
@@ -105,8 +102,8 @@ function! EvaluateCurrentLine()
 endfunction
 
 function! DoCommand()
-	" this function redirects output to a variable,
-	" runs the command, and returns result back to EvaluateCurrentLine()
+	" this function redirects output to a variable, runs the command, and
+	" returns result back to EvaluateCurrentLine()
 	let command = matchstr(getline(line('.')),'>>>\zs.*')
 	let @a=''
 	let g:result = ''
@@ -128,3 +125,5 @@ vmap <c-cr> :call EvaluateRange()<cr>
 " TODO: will this work for all languages?
 syn region rippleError start='^Error detected while' end='^\S\+Error:.*$'
 hi rippleError guibg=red
+
+" vim:noet:ts=4 sw=4:
