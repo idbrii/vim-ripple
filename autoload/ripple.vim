@@ -27,7 +27,8 @@ function! s:EvaluateFromInsertMode()
 	if getline(line('.')) =~ '^>>>'
 		call s:EvaluateCurrentLine()
 	else
-		normal! i
+		" Use :execute so we can use printable characters instead of raw ^M.
+		exec "normal! i\<CR>"
 	endif
 	return ''
 endfunction
@@ -38,7 +39,7 @@ function! s:EvaluateFromNormalMode()
 	if getline(line('.')) =~ '^>>>'
 		call s:EvaluateCurrentLine()
 	else
-		normal! 
+		exec "normal! \<CR>"
 	endif
 	return ''
 endfunction
@@ -62,9 +63,9 @@ function! s:EvaluateRange() range
 	if getline(line('.')) =~ b:bad_char
 		silent execute '.s/^'.b:bad_char.'//e'
 		if b:ripple_language !~ 'ruby\|perl'
-			silent execute '.s/'.b:bad_char.'//ge'
+			silent execute '.s/'.b:bad_char.'/\r/ge'
 		else
-			silent execute '.s/'.b:bad_char.b:bad_char.'//ge'
+			silent execute '.s/'.b:bad_char.b:bad_char.'/\r/ge'
 			silent execute '.s/'.b:bad_char.'//ge'
 		endif
 	endif
@@ -84,7 +85,7 @@ function! s:EvaluateCurrentLine()
 	if getline(line('.')) =~ b:bad_char
 		silent execute '.s/^'.b:bad_char.'//e'
 		"if != 'ruby'
-		silent execute '.s/'.b:bad_char.b:bad_char.'//ge'
+		silent execute '.s/'.b:bad_char.b:bad_char.'/\r/ge'
 		silent execute '.s/'.b:bad_char.'//ge'
 		"endif
 	endif
