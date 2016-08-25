@@ -1,11 +1,11 @@
 " Ripple - a read-eval-print-loop inside vim
 
-if exists('loaded_ripple') || &cp || version < 700
+if exists('g:loaded_ripple') || &cp || version < 700
 	finish
 endif
 let loaded_ripple = 1
 
-if !exists("g:ripple_default_language")
+if !exists('g:ripple_default_language')
 	let g:ripple_default_language = 'python'
 endif
 

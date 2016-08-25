@@ -5,7 +5,7 @@
 "	* Allow newlines so you can write a class or function.
 "	* Prevent error on empty line (just prompt).
 
-if !exists('loaded_ripple') || &cp || version < 700
+if !exists('g:loaded_ripple') || &cp || version < 700
 	finish
 endif
 
@@ -133,7 +133,7 @@ function! ripple#CreateRepl(...)
 	endif
 
 	" Setup new buffer
-	if exists('itchy_loaded') && exists(':Scratch') == 2
+	if exists('g:itchy_loaded') && exists(':Scratch') == 2
 		" itchy has nice opening behavior and will make it a scratch buffer
 		exec 'silent Scratch '. l:ripple_language
 	else
