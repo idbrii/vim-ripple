@@ -6,7 +6,7 @@ This plugin is only available if 'compatible' is not set.
 
 INTRODUCTION                                          *ripple*
 
-Ripple is a REPL (read-evalulate-print-loop) plugin for vim. It allows
+Ripple is a REPL (read-evaluate-print-loop) plugin for vim. It allows
 you to write code in a vim buffer and execute it from that buffer. The
 results will be appended to the buffer. You can write both single lines of
 code and blocks. Ripple can support any language with native vim
@@ -16,14 +16,14 @@ COMPATIBILITY                                  *ripple-compat*
 
 Ripple works with Ruby, Perl, and Lua.
 
-The global variable g:ripple_default_language can be set to 'python, 'ruby',
+The global variable g:ripple_default_language can be set to 'python', 'ruby',
 'perl', or 'lua'. It controls which interpreter is used to process '>>>'
 commands and code blocks.  Support for each interpreter must be compiled
 into your Vim.
 
-Note also that usng Perl is a little different from the other languages,
+Note also that using Perl is a little different from the other languages,
 because Vim does not support Perl's 'print' or 'say' commands. Instead
-'VIM::Msg' is used to specify printed output.   See :help perl for more.
+'VIM::Msg' is used to specify printed output.   See `:help perl` for more.
 
 Ripple requires a Vim executable compiled with support for the scripting
 language(s) that will be used. It has been tested with Python26, Ruby1.8,

@@ -1,6 +1,6 @@
 Vim-Ripple
 ----------
-vim-ripple is a REPL (read-evalulate-print-loop) plugin for vim. It allows you
+vim-ripple is a REPL (read-evaluate-print-loop) plugin for vim. It allows you
 to write code in a vim buffer and execute it from that buffer. The results
 will be appended to the buffer. You can write both single lines of code and
 blocks. vim-ripple can support any language with native vim bindings.
