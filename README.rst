@@ -25,7 +25,7 @@ tab-completion plugin and recommend that anyone using vim-ripple install pydicti
 You should get itchy.vim_ to have improved splitting behavior when opening a
 new REPL.
 
-.. _itchy.vim: https://github.com/pydave/itchy.vim
+.. _itchy.vim: https://github.com/idbrii/itchy.vim
 
 
 Compatibility

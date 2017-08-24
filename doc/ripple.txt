@@ -1,6 +1,6 @@
 *ripple.txt*  A REPL inside vim
 
-Authors:  hsitz and pydave
+Authors:  hsitz and idbrii
 
 This plugin is only available if 'compatible' is not set.
 
@@ -88,6 +88,6 @@ ABOUT                                           *ripple-about*
 
 Grab the latest version or report a bug on GitHub:
 
-http://github.com/pydave/vim-ripple
+http://github.com/idbrii/vim-ripple
 
  vim:tw=78:et:ft=help:norl:
