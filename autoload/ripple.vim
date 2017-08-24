@@ -9,13 +9,17 @@ if !exists('g:loaded_ripple') || &cp || version < 700
 	finish
 endif
 
-function! ripple#ValidateLanguage(ripple_language)
+function! ripple#ValidateLanguage(ripple_language, verbose)
 	let supported_languages = [ 'ruby', 'python', 'lua', 'perl' ]
 	let is_good = index(supported_languages, a:ripple_language) >= 0
 	if !is_good
-		echoerr 'Language "'. a:ripple_language .'" is unsupported by vim-ripple.'
+		if a:verbose
+			echoerr 'Language "'. a:ripple_language .'" is unsupported by vim-ripple.'
+		endif
 	elseif !has(a:ripple_language)
-		echoerr 'Your vim does not have '. a:ripple_language .' support. See :help '. a:ripple_language
+		if a:verbose
+			echoerr 'Your vim does not have '. a:ripple_language .' support. See :help '. a:ripple_language
+		endif
 		let is_good = 0
 	endif
 	return is_good
@@ -120,15 +124,17 @@ function! s:DoCommand()
 endfunction
 
 " Single optional argument: The language for the repl. If none is specified,
-" uses default in g:ripple_default_language.
+" tries to use current filetype or g:ripple_default_language.
 function! ripple#CreateRepl(...)
 	if a:0
 		let l:ripple_language = a:1
+	elseif g:ripple_filetype_as_default && ripple#ValidateLanguage(&filetype, 0)
+		let l:ripple_language = &filetype
 	else
 		let l:ripple_language = g:ripple_default_language
 	endif
 
-	if !ripple#ValidateLanguage(l:ripple_language)
+	if !ripple#ValidateLanguage(l:ripple_language, 1)
 		return
 	endif
 

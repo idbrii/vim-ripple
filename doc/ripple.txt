@@ -16,7 +16,14 @@ COMPATIBILITY                                  *ripple-compat*
 
 Ripple works with Ruby, Perl, and Lua.
 
-The global variable g:ripple_default_language can be set to 'python', 'ruby',
+                                *g:ripple_filetype_as_default*
+
+Ripple can use your current filetype for REPL.
+`let g:ripple_filetype_as_default = 0` to always use your default language.
+
+                                   *g:ripple_default_language*
+
+The global variable |g:ripple_default_language| can be set to 'python', 'ruby',
 'perl', or 'lua'. It controls which interpreter is used to process '>>>'
 commands and code blocks.  Support for each interpreter must be compiled
 into your Vim.
@@ -34,10 +41,11 @@ COMMANDS                                     *ripple-commands*
 
                                               *ripple-:Ripple*
 :Ripple [language]  Open a REPL in a new buffer with the input language. If
-                    [language] is omitted, |g:ripple_default_language| is
-                    used instead. If installed, this command will use
-                    |itchy| to open a scratch buffer. Otherwise, it just
-                    splits the window.
+                    [language] is omitted, your current filetype will be
+                    attempted (if |g:ripple_filetype_as_default| is enabled),
+                    and lastly |g:ripple_default_language| is used instead. If
+                    installed, this command will use |itchy| to open a scratch
+                    buffer. Otherwise, it just splits the window.
 
                                                *ripple-prompt*
 In the ripple REPL, there is a prompt: '>>>'. This prompt indicates an
