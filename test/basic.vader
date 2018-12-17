@@ -1,0 +1,39 @@
+# This isn't a proper test yet. This is just the code I
+# was testing with and the expected results. Need to
+# RippleCreate, dump the text, and check the output. Can
+# I even RippleCreate from vader?
+
+Given python ():
+  >>> print(3);print(3)
+  3
+  3
+
+  print(3)
+  print('t')
+  ---Results---
+  3
+  t
+
+Given ruby ():
+  >>> puts("hello"); puts("hello")
+  hello
+
+  hello
+
+  puts("hello")
+  puts("hello")
+  ---Results---
+  hello
+
+  hello
+
+Given lua ():
+  >>>  print("hi"); print("hi")
+  hi
+  hi
+
+  print("hi")
+  print("hi")
+  ---Results---
+  hi
+  hi
