@@ -10,18 +10,20 @@ if !exists('g:loaded_ripple') || &cp || version < 700
 endif
 
 function! ripple#ValidateLanguage(ripple_language, verbose)
-	let supported_languages = [ 'ruby', 'python', 'lua', 'perl' ]
-	let is_good = index(supported_languages, a:ripple_language) >= 0
-	if !is_good
+	try
+		let cmd = g:ripple_filetype_to_cmd[a:ripple_language]
+		let is_good = exists(':'. cmd) == 2
+		if !is_good
+			if a:verbose
+				echoerr 'Your vim does not have a :'. cmd .' command. See :help '. a:ripple_language
+			endif
+		endif
+	catch /^Vim\%((\a\+)\)\=:E716/	" Error: Key not present in Dictionary
+		let is_good = 0
 		if a:verbose
 			echoerr 'Language "'. a:ripple_language .'" is unsupported by vim-ripple.'
 		endif
-	elseif !has(a:ripple_language)
-		if a:verbose
-			echoerr 'Your vim does not have '. a:ripple_language .' support. See :help '. a:ripple_language
-		endif
-		let is_good = 0
-	endif
+	endtry 
 	return is_good
 endfunction
 
@@ -148,7 +150,7 @@ function! ripple#CreateRepl(...)
 		let &ft = l:ripple_language
 	endif
 	put! ='>>> '
-	let b:ripple_language = l:ripple_language
+	let b:ripple_language = g:ripple_filetype_to_cmd[l:ripple_language]
 
 	nnoremap <buffer> <CR> :call <SID>EvaluateFromNormalMode()<CR>
 	" Should this be <C-CR> so you can write more than one line of code?

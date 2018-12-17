@@ -14,19 +14,37 @@ bindings.
 
 COMPATIBILITY                                  *ripple-compat*
 
-Ripple works with Ruby, Perl, and Lua.
+Ripple works with Python, Ruby, Perl, and Lua.
+
+Ripple will use |pythonx| if available, but falls back to |python3| or
+|python|. You can force a specific version by defining
+|g:ripple_filetype_to_cmd|.
+
 
                                 *g:ripple_filetype_as_default*
 
 Ripple can use your current filetype for REPL.
 `let g:ripple_filetype_as_default = 0` to always use your default language.
 
+
                                    *g:ripple_default_language*
 
-The global variable |g:ripple_default_language| can be set to 'python', 'ruby',
-'perl', or 'lua'. It controls which interpreter is used to process '>>>'
-commands and code blocks.  Support for each interpreter must be compiled
-into your Vim.
+The global variable |g:ripple_default_language| can be set to 'python',
+'ruby', 'perl', or 'lua' to set the language used if filetype detection fails
+or is disabled (|g:ripple_filetype_as_default|). The language determines the
+interpreter is used to process '>>>' commands and code blocks.
+
+
+                                    *g:ripple_filetype_to_cmd*
+
+Ripple checks |g:ripple_filetype_to_cmd| for supported languages and how to
+execute them. Support for each interpreter must be compiled into your Vim.
+Before Ripple is loaded, you can define entries to change the execution
+command: >
+  " Force `:python` (python2)
+  let g:ripple_filetype_to_cmd = { 'python': 'python' }
+<
+See also 'pyxversion'.
 
 Note also that using Perl is a little different from the other languages,
 because Vim does not support Perl's 'print' or 'say' commands. Instead
