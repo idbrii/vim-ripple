@@ -49,13 +49,7 @@ function! s:EvaluateRange() range
 	" runs visually highlighted multiline block of code with single call to
 	" the interpreter
 	let lines = getline(a:firstline, a:lastline)
-	let result=''
-	redir =>> result
-	silent! execute b:ripple_language." ".join(lines,"\n")
-	redir END
-
-	" result has lines separated by null bytes.
-	let result = split(result, '\%x00')
+	let result = s:ExecuteCode(lines)
 
 	" Put the interpreter output into the buffer
 	call append(a:lastline,'---Results---')
@@ -66,8 +60,6 @@ endfunction
 function! s:EvaluateCurrentLine()
 	"get result of the command
 	let result = s:DoCommand()
-	" result has lines separated by null bytes.
-	let result = split(result, '\%x00')
 	call append(line('.'),result)
 	exec '+'. len(result)
 	call append(line('.'),'>>>  _')
@@ -83,18 +75,54 @@ function! s:EvaluateCurrentLine()
 	normal $x
 endfunction
 
+function! s:HasTryCatch()
+	return len(b:ripple_trycatch)
+endf
+function! s:ExecuteCode(code_lines)
+	let g:ripple_exception = ''
+	let code = a:code_lines
+	let try_ = []
+	let catch_ = []
+	let has_try = s:HasTryCatch()
+	if has_try
+		let try_ = [b:ripple_trycatch[1]]
+		let catch_ = b:ripple_trycatch[2:]
+		" Indent is probably required for try-catch.
+		let code = map(code, '"    ". v:val')
+	endif
+	let cmd = extend(try_, code)
+	if has_try
+		let cmd = extend(cmd, catch_)
+	endif
+	" We'll remove file before closing vim, so no fsync required.
+	call writefile(cmd, b:ripple_tempfile, 'S')
+	let use_file = b:ripple_language =~# 'file'
+	let result = ''
+	redir =>> result
+	if use_file
+		silent! exec b:ripple_language .' '. b:ripple_tempfile
+	else
+		silent! exec b:ripple_language .' '. cmd
+	endif
+	redir END
+	" result has lines separated by null bytes.
+	let result = split(result, '\%x00')
+	" TODO(ex): add callstack and fold it.
+	if len(g:ripple_exception)
+		let result = add(result, "Exception: ". g:ripple_exception)
+	endif
+	return result
+endf
+
 function! s:DoCommand()
 	" this function redirects output to a variable, runs the command, and
 	" returns result back to s:EvaluateCurrentLine()
 	let command = matchstr(getline(line('.')),'>>>\zs.*')
-	let result = ''
 	" tweak: initial p gets expanded to full 'print'
 	let command = substitute(command,'^\s*[pP] ','print ','')
-	redir =>> result
-	silent! exec b:ripple_language." ".command
-	redir END
-	if result == ''
-		let result='('.command.' )'
+	let result = s:ExecuteCode([command])
+	if len(result) == 0
+		let result = ['('.command.' )']
 	endif
 	return result
 endfunction
@@ -125,6 +153,18 @@ function! ripple#CreateRepl(...)
 	endif
 	put! ='>>> '
 	let b:ripple_language = g:ripple_filetype_to_cmd[l:ripple_language]
+	let b:ripple_tempfile = tempname()
+	augroup Ripple
+		au!
+		au BufDelete <buffer> call delete(b:ripple_tempfile)
+	augroup END
+	let b:ripple_trycatch = g:ripple_filetype_trycatch[l:ripple_language]
+	" First trycatch param is init code.
+	if s:HasTryCatch() && len(b:ripple_trycatch[0])
+		" Import vim with the nonfile command.
+		let nonfile_cmd = substitute(b:ripple_language, 'file', '', '')
+		execute nonfile_cmd .' '. b:ripple_trycatch[0]
+	endif
 
 	nnoremap <buffer> <CR> :call <SID>EvaluateFromNormalMode()<CR>
 	" Should this be <C-CR> so you can write more than one line of code?
@@ -133,6 +173,7 @@ function! ripple#CreateRepl(...)
 	vnoremap <buffer> <C-CR> :call <SID>EvaluateRange()<CR>
 
 	" TODO: will this work for all languages?
+	" TODO(ex): Add Exception string here.
 	syn region rippleError start='^Error detected while' end='^\s*\S\+Error:.*$'
 	hi rippleError guibg=red
 

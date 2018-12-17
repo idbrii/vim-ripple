@@ -15,21 +15,31 @@ endif
 
 
 let s:filetype_defaults = {
-			\ 'lua':    'lua',
+			\ 'lua':    'luafile',
 			\ 'perl':   'perl',
-			\ 'ruby':   'ruby',
+			\ 'ruby':   'rubyfile',
 			\ }
 if has('pythonx')
-	let s:filetype_defaults['python'] = 'pythonx'
+	let s:filetype_defaults['python'] = 'pyxfile'
 elseif has('python3')
-	let s:filetype_defaults['python'] = 'python3'
+	let s:filetype_defaults['python'] = 'py3file'
 elseif has('python')
-	let s:filetype_defaults['python'] = 'python'
+	let s:filetype_defaults['python'] = 'pyfile'
 endif
 
 " Clobber defaults with user values if they exist.
 let g:ripple_filetype_to_cmd = extend(s:filetype_defaults, get(g:, 'ripple_filetype_to_cmd', {}))
 unlet s:filetype_defaults
+
+" TODO(ex): Break into dictionary?
+let s:trycatch_defaults = {
+			\ 'lua':    [],
+			\ 'perl':   [],
+			\ 'python': ['import ripple', 'try:', 'except Exception as ex:', '     ripple.capture_exception(ex)'],
+			\ 'ruby':   [],
+			\ }
+let g:ripple_filetype_trycatch = extend(s:trycatch_defaults, get(g:, 'ripple_filetype_trycatch', {}))
+unlet s:trycatch_defaults
 
 command! -nargs=? RippleCreate :call ripple#CreateRepl(<f-args>)
 
