@@ -30,9 +30,10 @@ Ripple can use your current filetype for REPL.
                                    *g:ripple_default_language*
 
 The global variable |g:ripple_default_language| can be set to 'python',
-'ruby', 'perl', or 'lua' to set the language used if filetype detection fails
-or is disabled (|g:ripple_filetype_as_default|). The language determines the
-interpreter is used to process '>>>' commands and code blocks.
+'ruby', 'perl', or 'lua' to set the filetype used if filetype detection fails
+or is disabled (|g:ripple_filetype_as_default|). The filetype and
+|g:ripple_filetype_to_cmd| determine the interpreter is used to process '>>>'
+commands and code blocks.
 
 
                                     *g:ripple_filetype_to_cmd*
@@ -90,7 +91,7 @@ You will typically want to issue Python print commands, and these can be
 abbreviated with 'p' instead of 'print'.
 
 Note: It's not part of the plugin, but an entire file of Python can be
-executed with the Vim command:   pyfile <filename>.  The plugin does not
+executed with the Vim command:   |pyfile| <filename>.  The plugin does not
 capture any output from this command, however functions defined in the file
 can may then be accessed in the Vim buffer using single-line-prompt Python
 commands or the block-select Python processing.

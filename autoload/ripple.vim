@@ -1,7 +1,6 @@
 " Ripple - a read-eval-print-loop inside vim
 
 " TODO:
-"	* Write a help file.
 "	* Allow newlines so you can write a class or function.
 "	* Prevent error on empty line (just prompt).
 
