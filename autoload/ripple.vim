@@ -5,10 +5,6 @@
 "	* Allow newlines so you can write a class or function.
 "	* Prevent error on empty line (just prompt).
 
-if !exists('g:loaded_ripple') || &cp || version < 700
-	finish
-endif
-
 function! ripple#ValidateLanguage(ripple_language, verbose)
 	try
 		let cmd = g:ripple_filetype_to_cmd[a:ripple_language]
