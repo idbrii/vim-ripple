@@ -4,6 +4,7 @@
 "	* Allow newlines so you can write a class or function.
 "	* Prevent error on empty line (just prompt).
 
+
 function! ripple#ValidateLanguage(ripple_language, verbose)
 	try
 		let cmd = g:ripple_filetype_to_cmd[a:ripple_language]
@@ -109,7 +110,7 @@ function! s:ExecuteCode(code_lines)
 	let result = split(result, '\%x00')
 	" TODO(ex): add callstack and fold it.
 	if len(g:ripple_exception)
-		let result = add(result, "Exception: ". g:ripple_exception)
+		let result = add(result, s:exception_prefix. g:ripple_exception)
 	endif
 	return result
 endf
@@ -126,6 +127,17 @@ function! s:DoCommand()
 	endif
 	return result
 endfunction
+
+
+let s:exception_prefix = "Caught: "
+function! s:setup_syntax()
+	" Errors barfed by vim.
+	syn region rippleError start='^Error detected while' end='^\s*\S\+Error:.*$'
+	" Errors caught by our try-catch (matches s:exception_prefix).
+	syn match rippleException display /^Caught:\ze /
+	hi def link rippleError Error
+	hi def link rippleException Error
+endf
 
 " Single optional argument: The language for the repl. If none is specified,
 " tries to use current filetype or g:ripple_default_language.
@@ -172,10 +184,7 @@ function! ripple#CreateRepl(...)
 	" TODO: Why C-CR
 	vnoremap <buffer> <C-CR> :call <SID>EvaluateRange()<CR>
 
-	" TODO: will this work for all languages?
-	" TODO(ex): Add Exception string here.
-	syn region rippleError start='^Error detected while' end='^\s*\S\+Error:.*$'
-	hi rippleError guibg=red
+	call s:setup_syntax()
 
 	normal! $
 	if has('ex_extra')
