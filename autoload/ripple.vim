@@ -2,7 +2,6 @@
 
 " TODO:
 "	* Allow newlines so you can write a class or function.
-"	* Prevent error on empty line (just prompt).
 
 
 function! ripple#ValidateLanguage(ripple_language, verbose)
@@ -119,6 +118,10 @@ function! s:DoCommand()
 	" this function redirects output to a variable, runs the command, and
 	" returns result back to s:EvaluateCurrentLine()
 	let command = matchstr(getline(line('.')),'>>>\zs.*')
+	if command =~ '^\s*$'
+		" Do nothing for blank input.
+		return []
+	endif
 	" tweak: initial p gets expanded to full 'print'
 	let command = substitute(command,'^\s*[pP] ','print ','')
 	let result = s:ExecuteCode([command])
