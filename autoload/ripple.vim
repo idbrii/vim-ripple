@@ -96,7 +96,7 @@ function! s:ExecuteCode(code_lines)
 	endif
 	" We'll remove file before closing vim, so no fsync required.
 	call writefile(cmd, b:ripple_tempfile, 'S')
-	let use_file = b:ripple_language =~# 'file'
+	let use_file = b:ripple_language =~# 'file' || b:ripple_language == 'source'
 	let result = ''
 	redir =>> result
 	if use_file

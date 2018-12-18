@@ -18,6 +18,7 @@ let s:filetype_defaults = {
 			\ 'lua':    'luafile',
 			\ 'perl':   'perl',
 			\ 'ruby':   'rubyfile',
+			\ 'vim':    'source',
 			\ }
 if has('pythonx')
 	let s:filetype_defaults['python'] = 'pyxfile'
@@ -37,6 +38,7 @@ let s:trycatch_defaults = {
 			\ 'perl':   [],
 			\ 'python': ['import ripple', 'try:', 'except Exception as ex:', '     ripple.capture_exception(ex)'],
 			\ 'ruby':   [],
+			\ 'vim':    [],
 			\ }
 let g:ripple_filetype_trycatch = extend(s:trycatch_defaults, get(g:, 'ripple_filetype_trycatch', {}))
 unlet s:trycatch_defaults
