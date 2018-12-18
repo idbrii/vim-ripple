@@ -135,8 +135,10 @@ function! s:setup_syntax()
 	syn region rippleError start='^Error detected while' end='^\s*\S\+Error:.*$'
 	" Errors caught by our try-catch (matches s:exception_prefix).
 	syn match rippleException display /^Caught:\ze /
+	syn match ripplePrompt display /^>>>/
 	hi def link rippleError Error
 	hi def link rippleException Error
+	hi def link ripplePrompt Special
 endf
 
 " Single optional argument: The language for the repl. If none is specified,
