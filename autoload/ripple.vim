@@ -78,9 +78,22 @@ endfunction
 function! s:HasTryCatch()
 	return len(b:ripple_trycatch)
 endf
+function! s:HasNonBlankLine(code_lines)
+	let code = a:code_lines
+	for line in code
+		if line !~ '^\s*$'
+			return v:true
+		endif
+	endfor
+	return v:false
+endf
 function! s:ExecuteCode(code_lines)
 	let g:ripple_exception = ''
 	let code = a:code_lines
+	if !s:HasNonBlankLine(code)
+		" Do nothing for blank input.
+		return []
+	endif
 	let try_ = []
 	let catch_ = []
 	let has_try = s:HasTryCatch()
@@ -118,10 +131,6 @@ function! s:DoCommand()
 	" this function redirects output to a variable, runs the command, and
 	" returns result back to s:EvaluateCurrentLine()
 	let command = matchstr(getline(line('.')),'>>>\zs.*')
-	if command =~ '^\s*$'
-		" Do nothing for blank input.
-		return []
-	endif
 	" tweak: initial p gets expanded to full 'print'
 	let command = substitute(command,'^\s*[pP] ','print ','')
 	let result = s:ExecuteCode([command])
