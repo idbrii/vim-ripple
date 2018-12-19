@@ -1,9 +1,9 @@
-Vim-Ripple
+vim-ripple
 ----------
 vim-ripple is a REPL (read-evaluate-print-loop) plugin for vim. It allows you
 to write code in a vim buffer and execute it from that buffer. The results
 will be appended to the buffer. You can write both single lines of code and
-blocks. vim-ripple can support any language with native vim bindings.
+blocks. vim-ripple can support most languages with native vim bindings.
 
 
 Screencast
@@ -16,8 +16,8 @@ Watch the `screencast demo`_ of vim-ripple.
 Recommendations
 ---------------
 You can get tab completion of your Python commands by using any of the 
-available methods of completion in Vim.  I've tried the pydiction 
-tab-completion plugin and recommend that anyone using vim-ripple install pydiction_
+available methods of completion in Vim.  hsitz tried the pydiction_ 
+tab-completion plugin and recommends it to anyone using vim-ripple.
 
 .. _pydiction: http://www.vim.org/scripts/script.php?script_id=850  
 
@@ -30,7 +30,7 @@ new REPL.
 
 Compatibility
 -------------
-vim-ripple works with Ruby, Perl, and Lua.
+vim-ripple works with Python, Ruby, Perl, Lua, and VimScript.
 
 
 
@@ -105,9 +105,12 @@ a syntax file that clears all syntax settings so if you want to use these you
 may want to move the syntax and the highlight command to a syntax and color
 file, respectively.
 
-This is just a Sunday afternoon hack and there are lots of little tweaks and
-improvements that could be added.   I'd be happy to hear comments or
-suggestions. . . 
 
+Development
+-----------
+
+vim-ripple is a fork of hsitz/PyScratch that improves cross-platform
+compatibility, improves handling of errors, adds filetype detection, adds
+pythonx/python3 support, and adds support for VimScript.
 
  vim:tw=78:et:norl:
