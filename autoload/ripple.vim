@@ -182,7 +182,7 @@ function! ripple#CreateRepl(...)
 	let b:ripple_tempfile = tempname()
 	augroup Ripple
 		au!
-		au BufDelete <buffer> call delete(b:ripple_tempfile)
+		exec 'au BufDelete <buffer> call delete("'. b:ripple_tempfile .'")'
 	augroup END
 	let b:ripple_trycatch = g:ripple_filetype_trycatch[l:ripple_language]
 	" First trycatch param is init code.
