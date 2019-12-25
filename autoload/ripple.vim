@@ -181,7 +181,7 @@ function! ripple#CreateRepl(...)
 	let b:ripple_language = g:ripple_filetype_to_cmd[l:ripple_language]
 	let b:ripple_tempfile = tempname()
 	augroup Ripple
-		au!
+		au! BufDelete <buffer>
 		exec 'au BufDelete <buffer> call delete("'. b:ripple_tempfile .'")'
 	augroup END
 	let b:ripple_trycatch = g:ripple_filetype_trycatch[l:ripple_language]
