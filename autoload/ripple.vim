@@ -171,10 +171,16 @@ function! ripple#CreateRepl(...)
 	" Setup new buffer
 	if exists('g:itchy_loaded') && exists(':Scratch') == 2
 		" itchy has nice opening behavior and will make it a scratch buffer
+		" with a unique name.
+		let itchy_buffer_prefix_bak = g:itchy_buffer_prefix
+		let g:itchy_buffer_prefix = 'Ripple-'
+
 		exec 'silent Scratch '. l:ripple_language
+
+		let g:itchy_buffer_prefix = itchy_buffer_prefix_bak
 	else
 		" fall back on simpler behavior
-		silent vnew `= l:ripple_language`
+		silent vnew `= 'Ripple-'. l:ripple_language`
 		let &ft = l:ripple_language
 	endif
 	put! ='>>> '
