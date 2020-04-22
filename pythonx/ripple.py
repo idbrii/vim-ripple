@@ -3,7 +3,6 @@
 import re
 import vim
 
-noquote_re = re.compile('(["\'])')
 
 def capture_exception(ex):
     """Store exception for later handling.
@@ -11,11 +10,11 @@ def capture_exception(ex):
     capture_exception(Exception) -> None
     """
     ex_name = type(ex).__name__
-    ex_msg = noquote_re.sub(r'\\\1', str(ex))
-    cmd = 'let g:ripple_exception = \"%s: %s\"' % (ex_name, ex_msg)
-    vim.command(cmd)
+    ex_msg = str(ex)
+    vim.vars['ripple_exception'] = "%s: %s" % (ex_name, ex_msg)
 
-if __name__ == '__main__':
+# execute 'pyx import ripple; ripple._test()' | echo g:ripple_exception
+def _test():
     try:
         raise Exception('hello "friend"')
     except Exception as ex:

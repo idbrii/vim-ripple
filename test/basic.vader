@@ -14,6 +14,10 @@ Given python ():
   3
   t
 
+  :RippleCreate python
+  >>> os.join()
+  Caught: NameError: name 'os' is not defined
+
 Given ruby ():
   >>> puts("hello"); puts("hello")
   hello
